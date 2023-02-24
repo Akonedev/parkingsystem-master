@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem.integration;
 
+import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
@@ -13,7 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+
+import java.util.Date;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
@@ -52,6 +57,8 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
+        assertEquals(ticketDAO.getTicket("ABCDEF").getVehicleRegNumber(), "ABCDEF");
+        assertFalse(ticketDAO.getTicket("ABCDEF").getParkingSpot().isAvailable());
     }
 
     @Test
@@ -60,6 +67,36 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processExitingVehicle();
         //TODO: check that the fare generated and out time are populated correctly in the database
+        boolean isRegistered = false;
+        Date ouTime = ticketDAO.getTicket("ABCDEF").getOutTime();
+        Double fare = ticketDAO.getTicket("ABCDEF").getPrice();
+        if (fare != null && ouTime != null) {
+            isRegistered = true;
+        }
+        assertTrue(isRegistered);
+    }
+
+    @Test
+    public void testIfParkingSpotIsAvailableAfterExiting() {
+        testParkingACar();
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processExitingVehicle();
+        ParkingType parkingType = ticketDAO.getTicket("ABCDEF").getParkingSpot().getParkingType();
+        int i = parkingSpotDAO.getNextAvailableSlot(parkingType);
+        //assertEquals(i,ticketDAO.getTicket("ABCDEF").getParkingSpot().getId());
+        assertEquals(i, ticketDAO.getTicket("ABCDEF").getParkingSpot().getId());
+
+    }
+    
+    @Test
+    public void testIfRecurrentUserCheckMethodIsCalled() throws Exception {
+        testParkingACar();
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+//        parkingService.processExitingVehicle();
+//        testParkingACar();
+        parkingService.processExitingVehicle();
+        boolean isRegular = ticketDAO.findRecurringUser("ABCDEF");
+        assertTrue(isRegular);
     }
 
 }

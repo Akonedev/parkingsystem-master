@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem.service;
 
+import com.parkit.parkingsystem.config.DataBaseConfig;
+import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
@@ -9,6 +11,10 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 public class ParkingService {
@@ -20,6 +26,7 @@ public class ParkingService {
     private InputReaderUtil inputReaderUtil;
     private ParkingSpotDAO parkingSpotDAO;
     private  TicketDAO ticketDAO;
+    public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
     public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO){
         this.inputReaderUtil = inputReaderUtil;
@@ -78,7 +85,7 @@ public class ParkingService {
         return parkingSpot;
     }
 
-    private ParkingType getVehichleType(){
+    public ParkingType getVehichleType(){
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");
         System.out.println("2 BIKE");
@@ -104,17 +111,26 @@ public class ParkingService {
             Date outTime = new Date();
             ticket.setOutTime(outTime);
             fareCalculatorService.calculateFare(ticket);
+            Boolean isRecurrent = ticketDAO.findRecurringUser(vehicleRegNumber);
+            if (isRecurrent) {
+                fareCalculatorService.calculateReducedFare(ticket);
+            }else {
+                fareCalculatorService.calculateFare(ticket);
+            } 
             if(ticketDAO.updateTicket(ticket)) {
-                ParkingSpot parkingSpot = ticket.getParkingSpot();
-                parkingSpot.setAvailable(true);
-                parkingSpotDAO.updateParking(parkingSpot);
-                System.out.println("Please pay the parking fare:" + ticket.getPrice());
-                System.out.println("Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
-            }else{
-                System.out.println("Unable to update ticket information. Error occurred");
-            }
+	                ParkingSpot parkingSpot = ticket.getParkingSpot();
+	                parkingSpot.setAvailable(true);
+	                parkingSpotDAO.updateParking(parkingSpot);
+	                System.out.println("Please pay the parking fare:" + ticket.getPrice());
+	                System.out.println("Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+	            }else{
+	                System.out.println("Unable to update ticket information. Error occurred");
+	            }
         }catch(Exception e){
             logger.error("Unable to process exiting vehicle",e);
         }
+    } 
+    public boolean isRecurringUser(String vehicleRegNumber) throws SQLException, SQLException {
+        return ticketDAO.findRecurringUser(vehicleRegNumber);
     }
 }

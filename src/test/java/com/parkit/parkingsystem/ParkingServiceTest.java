@@ -34,6 +34,9 @@ public class ParkingServiceTest {
     private void setUpPerTest() {
         try {
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+           // when(inputReaderUtil.readSelection()).thenReturn(1);
+            
+
 
             ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
             Ticket ticket = new Ticket();
@@ -57,5 +60,6 @@ public class ParkingServiceTest {
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
     }
+    
 
 }

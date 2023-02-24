@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class TicketDAO {
@@ -86,4 +87,23 @@ public class TicketDAO {
         }
         return false;
     }
+    
+    public boolean findRecurringUser(String vehicleRegNumber) throws SQLException {
+        boolean ticketFound = false;
+        try (Connection con = dataBaseConfig.getConnection();
+             final PreparedStatement ps = con.prepareStatement(DBConstants.GET_LAST_PAID_TICKET);) {
+            // ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+            ps.setString(1, vehicleRegNumber);
+            final ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                ticketFound = true;
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+            return ticketFound;
+        } catch (final Exception ex) {
+            throw new SQLException("Error cannot find Available Slot", ex);
+        }
+    }
+    
 }
