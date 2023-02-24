@@ -110,7 +110,7 @@ public class ParkingService {
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             Date outTime = new Date();
             ticket.setOutTime(outTime);
-            fareCalculatorService.calculateFare(ticket);
+           // fareCalculatorService.calculateFare(ticket);
             Boolean isRecurrent = ticketDAO.findRecurringUser(vehicleRegNumber);
             if (isRecurrent) {
                 fareCalculatorService.calculateReducedFare(ticket);

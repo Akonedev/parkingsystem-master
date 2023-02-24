@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.Date;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,10 +58,9 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
-        assertEquals(ticketDAO.getTicket("ABCDEF").getVehicleRegNumber(), "ABCDEF");
+         assertEquals(ticketDAO.getTicket("ABCDEF").getVehicleRegNumber(), "ABCDEF");
         assertFalse(ticketDAO.getTicket("ABCDEF").getParkingSpot().isAvailable());
     }
-
     @Test
     public void testParkingLotExit(){
         testParkingACar();
@@ -76,6 +76,7 @@ public class ParkingDataBaseIT {
         assertTrue(isRegistered);
     }
 
+
     @Test
     public void testIfParkingSpotIsAvailableAfterExiting() {
         testParkingACar();
@@ -87,16 +88,14 @@ public class ParkingDataBaseIT {
         assertEquals(i, ticketDAO.getTicket("ABCDEF").getParkingSpot().getId());
 
     }
-    
     @Test
     public void testIfRecurrentUserCheckMethodIsCalled() throws Exception {
         testParkingACar();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-//        parkingService.processExitingVehicle();
-//        testParkingACar();
         parkingService.processExitingVehicle();
-        boolean isRegular = ticketDAO.findRecurringUser("ABCDEF");
-        assertTrue(isRegular);
+        testParkingACar();
+        parkingService.processExitingVehicle();
+        boolean isRecurrent= ticketDAO.findRecurringUser("ABCDEF");
+        assertTrue(isRecurrent);
     }
-
 }
