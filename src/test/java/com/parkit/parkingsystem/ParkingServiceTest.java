@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.SQLException;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,7 +44,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    void processIncomingVehicule_shouldPark_Car_whenParkingSlotIsAvailable() throws SQLException {
+    public void processIncomingCar_shouldPark_Car_whenParkingSlotIsAvailable() throws SQLException {
         setUpPerTest();
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
@@ -56,7 +57,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    void processIncomingVehicule_shouldPark_BIKE_whenParkingSlotIsAvailable() throws SQLException {
+    public void processIncomingBike_shouldPark_BIKE_whenParkingSlotIsAvailable() throws SQLException {
         setUpPerTest();
         when(inputReaderUtil.readSelection()).thenReturn(2);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(2);
@@ -69,9 +70,9 @@ public class ParkingServiceTest {
     }
 
     @Test
-    void processIncomingVehicle_shouldThrowException_whenParkingSpotIsIllegal() throws IllegalArgumentException {
+    public void processIncomingVehicle_shouldThrowException_whenParkingSpotIsIllegal() throws IllegalArgumentException {
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        when(inputReaderUtil.readSelection()).thenReturn(2);
+        when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
 
         parkingService.processIncomingVehicle();
@@ -86,6 +87,31 @@ public class ParkingServiceTest {
     public void processExitingVehicleTest(){
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+    }
+
+    @Test
+    public void processExitingVehicle_shouldUpdateParking() throws SQLException {
+        setUpPerTest();
+        final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
+        final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
+        when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+
+        parkingService.processExitingVehicle();
+
+        verify(ticketDAO, times(1)).updateTicket(any(Ticket.class));
+        verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
+        assertTrue(ticket.getParkingSpot().isAvailable());
+    }
+
+    private Ticket generateTicket(ParkingType type, Date inTime) {
+        final ParkingSpot parkingSpot = new ParkingSpot(1, type, false);
+        final Ticket ticket = new Ticket();
+        ticket.setInTime(inTime);
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setVehicleRegNumber("ABCDEF");
+        return ticket;
     }
 
 }
