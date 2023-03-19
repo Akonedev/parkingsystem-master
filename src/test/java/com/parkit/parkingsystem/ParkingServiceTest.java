@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.SQLException;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -103,6 +103,22 @@ public class ParkingServiceTest {
         verify(ticketDAO, times(1)).updateTicket(any(Ticket.class));
         verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
         assertTrue(ticket.getParkingSpot().isAvailable());
+    }
+
+    @Test
+    void processExitingVehicle_shouldNotUpdateParking_whenErrorOccurred() throws SQLException {
+        setUpPerTest();
+        final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
+        final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
+        when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
+
+        parkingService.processExitingVehicle();
+
+        assertEquals(0, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR));
+        verify(ticketDAO, times(1)).updateTicket(any(Ticket.class));
+        verify(parkingSpotDAO, times(0)).updateParking(any(ParkingSpot.class));
+        assertFalse(ticket.getParkingSpot().isAvailable());
     }
 
     private Ticket generateTicket(ParkingType type, Date inTime) {
