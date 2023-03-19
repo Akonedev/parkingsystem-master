@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem.service;
 
+import com.parkit.parkingsystem.constants.DBConstants;
+import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
@@ -9,10 +11,16 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
+
 
 public class ParkingService {
 
+    private DataBaseConfig dataBaseConfig = new DataBaseConfig();
     private static final Logger logger = LogManager.getLogger("ParkingService");
 
     private static FareCalculatorService fareCalculatorService = new FareCalculatorService();
@@ -103,7 +111,12 @@ public class ParkingService {
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             Date outTime = new Date();
             ticket.setOutTime(outTime);
+            //fareCalculatorService.calculateFare(ticket);
+            Boolean isRecurrent = ticketDAO.findRecurringUser(vehicleRegNumber);
             fareCalculatorService.calculateFare(ticket);
+            if (isRecurrent && ticket.getPrice()>0 ) {
+                fareCalculatorService.calculateReducedFare(ticket);
+            }
             if(ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
                 parkingSpot.setAvailable(true);
@@ -117,4 +130,5 @@ public class ParkingService {
             logger.error("Unable to process exiting vehicle",e.getMessage());
         }
     }
+
 }
