@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
+import static com.parkit.parkingsystem.constants.DBConstants.DB_PASSWORD;
+
 public class DataBaseConfig {
 
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
@@ -13,7 +15,7 @@ public class DataBaseConfig {
         logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/prod","root","rootroot");
+                "jdbc:mysql://localhost:3306/prod?serverTimezone=UTC","root", DB_PASSWORD);
     }
 
     public void closeConnection(Connection con){
