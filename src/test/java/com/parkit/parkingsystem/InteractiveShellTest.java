@@ -33,12 +33,23 @@ public class InteractiveShellTest {
     }
 
     @Test
-    void loadInterface_shouldCallProcessExitingVehicle_whenCase2() {
+    public void loadInterface_shouldCallProcessExitingVehicle_whenCase2() {
         // Given When
         when(inputReaderUtil.readSelection()).thenReturn(2, 3);
         InteractiveShell.loadInterface(inputReaderUtil, parkingService);
         // Then
         verify(parkingService, times(1)).processExitingVehicle();
+    }
+
+    @Test
+    public
+    void loadInterface_shouldNotCallAnyone_whenCase3() {
+        // Given When
+        when(inputReaderUtil.readSelection()).thenReturn(3);
+        InteractiveShell.loadInterface(inputReaderUtil, parkingService);
+        // Then
+        verify(parkingService, times(0)).processIncomingVehicle();
+        verify(parkingService, times(0)).processExitingVehicle();
     }
 }
 
