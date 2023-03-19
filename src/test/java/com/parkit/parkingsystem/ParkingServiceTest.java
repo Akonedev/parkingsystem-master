@@ -70,7 +70,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void processIncomingVehicle_shouldThrowException_whenParkingSpotIsIllegal() throws IllegalArgumentException {
+    public void processIncomingVehicle_shouldThrowException_whenParkingSpotIsIllegal() throws SQLException {
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
