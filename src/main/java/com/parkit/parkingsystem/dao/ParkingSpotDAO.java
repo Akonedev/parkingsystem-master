@@ -30,7 +30,8 @@ public class ParkingSpotDAO {
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
         }catch (Exception ex){
-            logger.error("Error fetching next available slot",ex);
+          //  logger.error("Error fetching next available slot",ex);
+            throw new IllegalArgumentException("Unkown Parking Type");
         }finally {
             dataBaseConfig.closeConnection(con);
         }

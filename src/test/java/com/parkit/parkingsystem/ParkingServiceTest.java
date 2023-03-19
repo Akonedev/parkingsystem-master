@@ -31,7 +31,7 @@ public class ParkingServiceTest {
     @Mock
     private static TicketDAO ticketDAO;
 
-    @BeforeEach
+    //@BeforeEach
     private void setUpPerTest() {
         try {
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -53,6 +53,18 @@ public class ParkingServiceTest {
 
         verify(ticketDAO, times(1)).saveTicket(any(Ticket.class));
         verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
+    }
+
+    @Test
+    void processIncomingVehicle_shouldThrowException_whenParkingSpotIsIllegal() throws IllegalArgumentException {
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        when(inputReaderUtil.readSelection()).thenReturn(2);
+        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
+
+        parkingService.processIncomingVehicle();
+
+        verify(parkingSpotDAO, times(0)).updateParking(any(ParkingSpot.class));
+        verify(ticketDAO, times(0)).saveTicket(any(Ticket.class));
     }
 
     @Test
