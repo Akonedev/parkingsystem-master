@@ -97,7 +97,7 @@ public class ParkingService {
         }
     }
 
-    public void processExitingVehicle() {
+    public void processExitingVehicle()  {
         try{
             String vehicleRegNumber = getVehichleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
@@ -113,8 +113,8 @@ public class ParkingService {
             }else{
                 System.out.println("Unable to update ticket information. Error occurred");
             }
-        }catch(Exception e){
-            logger.error("Unable to process exiting vehicle",e);
+        }catch(final Exception e){
+            logger.error("Unable to process exiting vehicle",e.getMessage());
         }
     }
 }

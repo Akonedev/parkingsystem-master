@@ -32,7 +32,7 @@ public class ParkingServiceTest {
     @Mock
     private static TicketDAO ticketDAO;
 
-    //@BeforeEach
+
     private void setUpPerTest() {
         try {
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -119,6 +119,18 @@ public class ParkingServiceTest {
         verify(ticketDAO, times(1)).updateTicket(any(Ticket.class));
         verify(parkingSpotDAO, times(0)).updateParking(any(ParkingSpot.class));
         assertFalse(ticket.getParkingSpot().isAvailable());
+    }
+
+    @Test
+    void processExitingVehicle_shouldThrowSQLException_whenGetTicket() throws SQLException {
+        setUpPerTest();
+        new Date(System.currentTimeMillis() - (60 * 60 * 1000));
+        when(ticketDAO.getTicket(anyString())).thenThrow(new SQLException("Failed to get ticket"));
+
+        parkingService.processExitingVehicle();
+
+        verify(ticketDAO, times(0)).updateTicket(any(Ticket.class));
+        verify(parkingSpotDAO, times(0)).updateParking(any(ParkingSpot.class));
     }
 
     private Ticket generateTicket(ParkingType type, Date inTime) {
