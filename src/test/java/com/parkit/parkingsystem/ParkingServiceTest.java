@@ -81,14 +81,6 @@ public class ParkingServiceTest {
         verify(ticketDAO, times(0)).saveTicket(any(Ticket.class));
     }
 
-
-
-    @Test
-    public void processExitingVehicleTest(){
-        parkingService.processExitingVehicle();
-        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-    }
-
     @Test
     public void processExitingVehicle_shouldUpdateParking() throws SQLException {
         setUpPerTest();
