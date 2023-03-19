@@ -53,12 +53,12 @@ public class ParkingService {
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
                 ticketDAO.saveTicket(ticket);
-                System.out.println("Generated Ticket and saved in DB");
-                System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
-                System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
+                logger.info("Generated Ticket and saved in DB");
+                logger.info("Please park your vehicle in spot number:"+parkingSpot.getId());
+                logger.info("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
             }
-        }catch(Exception e){
-            logger.error("Unable to process incoming vehicle",e);
+        }catch(final Exception e){
+            logger.error("Unable to process incoming vehicle",e.getMessage());
         }
     }
 
@@ -121,10 +121,10 @@ public class ParkingService {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
                 parkingSpot.setAvailable(true);
                 parkingSpotDAO.updateParking(parkingSpot);
-                System.out.println("Please pay the parking fare:" + ticket.getPrice());
-                System.out.println("Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+                logger.info("Please pay the parking fare:" + ticket.getPrice());
+                logger.info("Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
             }else{
-                System.out.println("Unable to update ticket information. Error occurred");
+                logger.info("Unable to update ticket information. Error occurred");
             }
         }catch(final Exception e){
             logger.error("Unable to process exiting vehicle",e.getMessage());

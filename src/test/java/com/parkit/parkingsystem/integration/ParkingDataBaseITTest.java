@@ -9,10 +9,7 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 
@@ -23,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("ParkingDataBaseITTest")
+@DisplayName("Parking DataBase Integration Test")
 public class ParkingDataBaseITTest {
 
     private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
@@ -55,6 +54,7 @@ public class ParkingDataBaseITTest {
     }
 
     @Test
+    @DisplayName("test Parking A Car")
     public void testParkingACar() throws Exception {
         final ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
@@ -66,6 +66,7 @@ public class ParkingDataBaseITTest {
 
 
     @Test
+    @DisplayName("test exiting A Car")
     public void testParkingLotExit() throws Exception {
         final ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
