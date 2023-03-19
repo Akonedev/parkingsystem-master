@@ -65,4 +65,15 @@ public class ParkingDataBaseITTest {
     }
 
 
+    @Test
+    public void testParkingLotExit() throws Exception {
+        final ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processIncomingVehicle();
+        Thread.sleep(2000);
+        parkingService.processExitingVehicle();
+        final Ticket ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
+        assertNotNull(ticket.getOutTime());
+
+    }
+
 }
