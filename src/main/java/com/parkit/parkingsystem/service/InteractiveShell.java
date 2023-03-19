@@ -15,6 +15,12 @@ public class InteractiveShell {
         System.out.println("Welcome to Parking System!");
 
         boolean continueApp = true;
+//        this.Inp
+//        InputReaderUtil inputReaderUtil = new InputReaderUtil();
+//        ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
+//        TicketDAO ticketDAO = new TicketDAO();
+//        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
         while(continueApp){
             loadMenu();
             int option = inputReaderUtil.readSelection();
