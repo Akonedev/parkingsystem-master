@@ -79,4 +79,24 @@ public class TicketDAO {
             throw new SQLException("Error saving ticket info", ex);
         }
     }
+
+    public boolean findRecurringUser(String vehicleRegNumber) throws SQLException {
+
+        boolean ticketFound = false;
+
+        try(Connection con = dataBaseConfig.getConnection();
+            final PreparedStatement ps = con.prepareStatement(DBConstants.FIND_RECURRENT);) {
+            ps.setString(1, vehicleRegNumber);
+            final ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                ticketFound = true;
+            }
+            ps.close();
+            rs.close();
+            dataBaseConfig.closeConnection(con);
+            return ticketFound;
+        }catch (final Exception e) {
+            throw new SQLException("Got an exception! ");
+        }
+    }
 }
