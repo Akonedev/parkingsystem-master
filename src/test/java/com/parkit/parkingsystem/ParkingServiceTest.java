@@ -43,10 +43,23 @@ public class ParkingServiceTest {
     }
 
     @Test
-    void processIncomingVehicule_shouldParkVehicle_whenParkingSlotIsAvailable() throws SQLException {
+    void processIncomingVehicule_shouldPark_Car_whenParkingSlotIsAvailable() throws SQLException {
         setUpPerTest();
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+
+        parkingService.processIncomingVehicle();
+
+        verify(ticketDAO, times(1)).saveTicket(any(Ticket.class));
+        verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
+    }
+
+    @Test
+    void processIncomingVehicule_shouldPark_BIKE_whenParkingSlotIsAvailable() throws SQLException {
+        setUpPerTest();
+        when(inputReaderUtil.readSelection()).thenReturn(2);
+        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(2);
         when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
         parkingService.processIncomingVehicle();
@@ -66,6 +79,8 @@ public class ParkingServiceTest {
         verify(parkingSpotDAO, times(0)).updateParking(any(ParkingSpot.class));
         verify(ticketDAO, times(0)).saveTicket(any(Ticket.class));
     }
+
+
 
     @Test
     public void processExitingVehicleTest(){
