@@ -41,10 +41,13 @@ public class FareCalculatorService {
             }
         }
     }
-
     public void calculateReducedFare(Ticket ticket){
-        FareCalculatorService fareCalculatorService = new FareCalculatorService();
-        ticket.setPrice( ticket.getPrice() * Fare.DISCOUNT_RATE_PER_HOUR);
+        if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){
+            throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
+        }
+        calculateFare(ticket);
+        ticket.setPrice(ticket.getPrice() * Fare.DISCOUNT_RATE_PER_HOUR);
+
     }
 
 
