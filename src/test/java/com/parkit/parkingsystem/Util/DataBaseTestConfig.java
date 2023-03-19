@@ -1,4 +1,4 @@
-package com.parkit.parkingsystem.integration.config;
+package com.parkit.parkingsystem.Util;
 
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import org.apache.logging.log4j.LogManager;
