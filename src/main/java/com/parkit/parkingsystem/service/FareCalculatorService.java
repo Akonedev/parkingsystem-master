@@ -41,4 +41,11 @@ public class FareCalculatorService {
             }
         }
     }
+
+    public void calculateReducedFare(Ticket ticket){
+        FareCalculatorService fareCalculatorService = new FareCalculatorService();
+        ticket.setPrice( ticket.getPrice() * Fare.DISCOUNT_RATE_PER_HOUR);
+    }
+
+
 }
