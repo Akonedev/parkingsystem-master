@@ -98,7 +98,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    void processExitingVehicle_shouldNotUpdateParking_whenErrorOccurred() throws SQLException {
+    public void processExitingVehicle_shouldNotUpdateParking_whenErrorOccurred() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
         final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
@@ -114,7 +114,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    void processExitingVehicle_shouldThrowSQLException_whenGetTicket() throws SQLException {
+    public void processExitingVehicle_shouldThrowSQLException_whenGetTicket() throws SQLException {
         setUpPerTest();
         new Date(System.currentTimeMillis() - (60 * 60 * 1000));
         when(ticketDAO.getTicket(anyString())).thenThrow(new SQLException("Failed to get ticket"));
@@ -126,7 +126,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    void parkingForLessThan30Minutes_shouldBeFree() throws SQLException {
+    public void parkingForLessThan30Minutes_shouldBeFree() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (20 * 60 * 1000));
         final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
@@ -141,6 +141,25 @@ public class ParkingServiceTest {
         assertTrue(ticket.getParkingSpot().isAvailable());
 
     }
+
+    @Test
+    public void ChargeForRecurringUser_WhenExit() throws SQLException {
+        setUpPerTest();
+        final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
+        final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
+        when(ticketDAO.findRecurringUser(anyString())).thenReturn(true);
+        when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+
+        parkingService.processExitingVehicle();
+
+        assertEquals(0.95 * 1.5/2, ticket.getPrice());
+        verify(ticketDAO, times(1)).updateTicket(ticket);
+        verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
+        assertTrue(ticket.getParkingSpot().isAvailable());
+    }
+
 
     private Ticket generateTicket(ParkingType type, Date inTime) {
         final ParkingSpot parkingSpot = new ParkingSpot(1, type, false);
