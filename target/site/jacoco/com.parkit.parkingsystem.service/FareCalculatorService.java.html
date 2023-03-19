@@ -41,5 +41,15 @@ import java.time.LocalDateTime;
             }
         }
 <span class="fc" id="L43">    }</span>
+    public void calculateReducedFare(Ticket ticket){
+<span class="pc bpc" id="L45" title="2 of 4 branches missed.">        if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){</span>
+<span class="nc" id="L46">            throw new IllegalArgumentException(&quot;Out time provided is incorrect:&quot;+ticket.getOutTime().toString());</span>
+        }
+<span class="fc" id="L48">        calculateFare(ticket);</span>
+<span class="fc" id="L49">        ticket.setPrice(ticket.getPrice() * Fare.DISCOUNT_RATE_PER_HOUR);</span>
+
+<span class="fc" id="L51">    }</span>
+
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
