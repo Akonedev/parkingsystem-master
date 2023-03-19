@@ -32,6 +32,13 @@ public class InteractiveShellTest {
         verify(parkingService, times(1)).processIncomingVehicle();
     }
 
-
+    @Test
+    void loadInterface_shouldCallProcessExitingVehicle_whenCase2() {
+        // Given When
+        when(inputReaderUtil.readSelection()).thenReturn(2, 3);
+        InteractiveShell.loadInterface(inputReaderUtil, parkingService);
+        // Then
+        verify(parkingService, times(1)).processExitingVehicle();
+    }
 }
 
