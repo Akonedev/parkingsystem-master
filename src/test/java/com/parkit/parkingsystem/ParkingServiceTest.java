@@ -133,6 +133,23 @@ public class ParkingServiceTest {
         verify(parkingSpotDAO, times(0)).updateParking(any(ParkingSpot.class));
     }
 
+    @Test
+    void parkingForLessThan30Minutes_shouldBeFree() throws SQLException {
+        setUpPerTest();
+        final Date inTime = new Date(System.currentTimeMillis() - (20 * 60 * 1000));
+        final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
+        when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+
+        parkingService.processExitingVehicle();
+
+        verify(ticketDAO, times(1)).updateTicket(any(Ticket.class));
+        verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
+        assertEquals(0, ticket.getPrice());
+        assertTrue(ticket.getParkingSpot().isAvailable());
+
+    }
+
     private Ticket generateTicket(ParkingType type, Date inTime) {
         final ParkingSpot parkingSpot = new ParkingSpot(1, type, false);
         final Ticket ticket = new Ticket();
