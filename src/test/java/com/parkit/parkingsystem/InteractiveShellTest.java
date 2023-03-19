@@ -51,5 +51,16 @@ public class InteractiveShellTest {
         verify(parkingService, times(0)).processIncomingVehicle();
         verify(parkingService, times(0)).processExitingVehicle();
     }
+
+
+    @Test
+    void loadInterface_shouldNotCallNothing_whenOtherCases() {
+        // Given When
+        when(inputReaderUtil.readSelection()).thenReturn(4, -1, 0, 3);
+        InteractiveShell.loadInterface(inputReaderUtil, parkingService);
+        // Then
+        verify(parkingService, times(0)).processIncomingVehicle();
+        verify(parkingService, times(0)).processExitingVehicle();
+    }
 }
 
