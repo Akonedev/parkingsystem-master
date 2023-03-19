@@ -7,6 +7,8 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -19,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("ParkingServiceTest")
+@DisplayName("ParkingService Tests")
 public class ParkingServiceTest {
 
     private static ParkingService parkingService;
@@ -42,6 +46,7 @@ public class ParkingServiceTest {
     }
 
     @Test
+    @DisplayName("process Incoming Car . It should Park a Car when Parking Slot IsAvailable")
     public void processIncomingCar_shouldPark_Car_whenParkingSlotIsAvailable() throws SQLException {
         setUpPerTest();
         when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -55,6 +60,7 @@ public class ParkingServiceTest {
     }
 
     @Test
+    @DisplayName("process Incoming Bike. It should Park a bike when Parking Slot IsAvailable")
     public void processIncomingBike_shouldPark_BIKE_whenParkingSlotIsAvailable() throws SQLException {
         setUpPerTest();
         when(inputReaderUtil.readSelection()).thenReturn(2);
@@ -68,6 +74,7 @@ public class ParkingServiceTest {
     }
 
     @Test
+    @DisplayName("process Incoming Car. It Throw Exception when Parking Slot Illegal")
     public void processIncomingVehicle_shouldThrowException_whenParkingSpotIsIllegal() throws SQLException {
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -80,6 +87,7 @@ public class ParkingServiceTest {
     }
 
     @Test
+    @DisplayName("process Exiting Bike. It should Update Parking")
     public void processExitingVehicle_shouldUpdateParking() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
@@ -96,6 +104,7 @@ public class ParkingServiceTest {
     }
 
     @Test
+    @DisplayName("process Exiting Bike. It should Not Update Parking whenError Occurred")
     public void processExitingVehicle_shouldNotUpdateParking_whenErrorOccurred() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
@@ -112,6 +121,7 @@ public class ParkingServiceTest {
     }
 
     @Test
+    @DisplayName("process Exiting Bike. It should Throw SQLException whenError Occurred on GetTicket")
     public void processExitingVehicle_shouldThrowSQLException_whenGetTicket() throws SQLException {
         setUpPerTest();
         new Date(System.currentTimeMillis() - (60 * 60 * 1000));
@@ -124,6 +134,7 @@ public class ParkingServiceTest {
     }
 
     @Test
+    @DisplayName("process Exiting Bike.Parking Time is less than 30 mn. Should be Free")
     public void parkingForLessThan30Minutes_shouldBeFree() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (20 * 60 * 1000));
@@ -141,6 +152,7 @@ public class ParkingServiceTest {
     }
 
     @Test
+    @DisplayName("process Exiting Bik for recurring user")
     public void ChargeForRecurringUser_WhenExit() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
