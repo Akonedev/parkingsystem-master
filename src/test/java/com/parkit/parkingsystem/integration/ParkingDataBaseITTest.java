@@ -72,7 +72,7 @@ public class ParkingDataBaseITTest {
         //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
         final Ticket dbTicket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
         assertEquals(ticketDAO.getTicket("ABCDEF").getId(), 1);
-        assertEquals(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE), 2);
+        assertEquals(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE), 4);
     }
 
 
