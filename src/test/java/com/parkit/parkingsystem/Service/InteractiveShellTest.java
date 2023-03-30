@@ -30,7 +30,7 @@ public class InteractiveShellTest {
 
     @Test
     @DisplayName("load Interface; It should Call Process IncomingVehicle when Case = 1")
-    public void loadInterface_shouldCallProcessIncomingVehicle_whenCase1() {
+    public void load_Interface_Should_Call_Process_Incoming_Vehicle_when_Case1() {
         when(inputReaderUtil.readSelection()).thenReturn(1, 3);
         interactiveShell.loadInterface(inputReaderUtil, parkingService);
 
@@ -39,7 +39,7 @@ public class InteractiveShellTest {
 
     @Test
     @DisplayName("load Interface; It should Call Process IncomingVehicle when Case = 2")
-    public void loadInterface_shouldCallProcessExitingVehicle_whenCase2() {
+    public void load_Interface_Should_Call_Process_Exiting_Vehicle_when_Case2() {
         when(inputReaderUtil.readSelection()).thenReturn(2, 3);
         interactiveShell.loadInterface(inputReaderUtil, parkingService);
 
@@ -48,7 +48,7 @@ public class InteractiveShellTest {
 
     @Test
     @DisplayName("load Interface; It should Call Process IncomingVehicle when Case = 3")
-    public void loadInterface_shouldNotCallAnyone_whenCase3() {
+    public void load_Interface_Should_Not_Call_Anyone_when_Case3() {
         when(inputReaderUtil.readSelection()).thenReturn(3);
         interactiveShell.loadInterface(inputReaderUtil, parkingService);
 
@@ -59,7 +59,7 @@ public class InteractiveShellTest {
 
     @Test
     @DisplayName("load Interface; It should not nothing when Other Cases")
-    void loadInterface_shouldNotCallNothing_whenOtherCases() {
+    void load_Interface_should_Not_Call_Nothing_when_Other_Cases() {
         when(inputReaderUtil.readSelection()).thenReturn(4, -1, 0, 3);
         interactiveShell.loadInterface(inputReaderUtil, parkingService);
 

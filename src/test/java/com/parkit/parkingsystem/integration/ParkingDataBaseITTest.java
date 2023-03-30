@@ -55,7 +55,7 @@ public class ParkingDataBaseITTest {
 
     @Test
     @DisplayName("test Parking A Car")
-    public void testParkingACar() throws Exception {
+    public void process_Incoming_Car_should_saved_tiket_and_parking_slot() throws Exception {
         final ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
@@ -64,10 +64,21 @@ public class ParkingDataBaseITTest {
         assertEquals(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR), 2);
     }
 
+    @Test
+    @DisplayName("test Parking A Bike")
+    public void process_Incoming_Bike_should_saved_tiket_and_parking_slot() throws Exception {
+        final ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processIncomingVehicle();
+        //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
+        final Ticket dbTicket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
+        assertEquals(ticketDAO.getTicket("ABCDEF").getId(), 1);
+        assertEquals(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE), 2);
+    }
+
 
     @Test
-    @DisplayName("test exiting A Car")
-    public void testParkingLotExit() throws Exception {
+    @DisplayName("test exiting A vehicule")
+    public void process_Exiting_Vehicule_Should_Update_Tiket_Out_Time() throws Exception {
         final ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         Thread.sleep(2000);
@@ -76,5 +87,6 @@ public class ParkingDataBaseITTest {
         assertNotNull(ticket.getOutTime());
 
     }
+
 
 }

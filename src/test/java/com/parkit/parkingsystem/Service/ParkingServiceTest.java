@@ -45,9 +45,18 @@ public class ParkingServiceTest {
         }
     }
 
+    private Ticket generateTicket(ParkingType type, Date inTime) {
+        final ParkingSpot parkingSpot = new ParkingSpot(1, type, false);
+        final Ticket ticket = new Ticket();
+        ticket.setInTime(inTime);
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setVehicleRegNumber("ABCDEF");
+        return ticket;
+    }
+
     @Test
     @DisplayName("process Incoming Car . It should Park a Car when Parking Slot IsAvailable")
-    public void processIncomingCar_shouldPark_Car_whenParkingSlotIsAvailable() throws SQLException {
+    public void process_Incoming_Car_should_Park_Car_when_Parking_Slot_Is_Available() throws SQLException {
         setUpPerTest();
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
@@ -61,7 +70,7 @@ public class ParkingServiceTest {
 
     @Test
     @DisplayName("process Incoming Bike. It should Park a bike when Parking Slot IsAvailable")
-    public void processIncomingBike_shouldPark_BIKE_whenParkingSlotIsAvailable() throws SQLException {
+    public void process_Incoming_Bike_should_Park_BIKE_when_Parking_Slot_Is_Available() throws SQLException {
         setUpPerTest();
         when(inputReaderUtil.readSelection()).thenReturn(2);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(2);
@@ -75,7 +84,7 @@ public class ParkingServiceTest {
 
     @Test
     @DisplayName("process Incoming Car. It Throw Exception when Parking Slot Illegal")
-    public void processIncomingVehicle_shouldThrowException_whenParkingSpotIsIllegal() throws SQLException {
+    public void process_Incoming_Vehicle_should_Throw_Exception_when_Parking_Spot_Is_Illegal() throws SQLException {
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
@@ -88,7 +97,7 @@ public class ParkingServiceTest {
 
     @Test
     @DisplayName("process Exiting Bike. It should Update Parking")
-    public void processExitingVehicle_shouldUpdateParking() throws SQLException {
+    public void process_Exiting_Vehicle_should_Update_Parking() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
         final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
@@ -105,7 +114,7 @@ public class ParkingServiceTest {
 
     @Test
     @DisplayName("process Exiting Bike. It should Not Update Parking whenError Occurred")
-    public void processExitingVehicle_shouldNotUpdateParking_whenErrorOccurred() throws SQLException {
+    public void process_Exiting_Vehicle_should_Not_Update_Parking_when_Error_Occurred() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
         final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
@@ -122,7 +131,7 @@ public class ParkingServiceTest {
 
     @Test
     @DisplayName("process Exiting Bike. It should Throw SQLException whenError Occurred on GetTicket")
-    public void processExitingVehicle_shouldThrowSQLException_whenGetTicket() throws SQLException {
+    public void process_Exiting_Vehicle_should_Throw_SQL_Exception_when_GetT_icket() throws SQLException {
         setUpPerTest();
         new Date(System.currentTimeMillis() - (60 * 60 * 1000));
         when(ticketDAO.getTicket(anyString())).thenThrow(new SQLException("Failed to get ticket"));
@@ -135,7 +144,7 @@ public class ParkingServiceTest {
 
     @Test
     @DisplayName("process Exiting Bike.Parking Time is less than 30 mn. Should be Free")
-    public void parkingForLessThan30Minutes_shouldBeFree() throws SQLException {
+    public void process_Exiting_Vehicle_parking_For_Less_Than_30_Minutes_shoul_dBe_Free() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (20 * 60 * 1000));
         final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
@@ -153,7 +162,7 @@ public class ParkingServiceTest {
 
     @Test
     @DisplayName("process Exiting Bik for recurring user")
-    public void ChargeForRecurringUser_WhenExit() throws SQLException {
+    public void process_Exiting_Vehicle_Should_return_charge_For_Recurring_User_When_Exit() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
         final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
@@ -171,13 +180,6 @@ public class ParkingServiceTest {
     }
 
 
-    private Ticket generateTicket(ParkingType type, Date inTime) {
-        final ParkingSpot parkingSpot = new ParkingSpot(1, type, false);
-        final Ticket ticket = new Ticket();
-        ticket.setInTime(inTime);
-        ticket.setParkingSpot(parkingSpot);
-        ticket.setVehicleRegNumber("ABCDEF");
-        return ticket;
-    }
+
 
 }
