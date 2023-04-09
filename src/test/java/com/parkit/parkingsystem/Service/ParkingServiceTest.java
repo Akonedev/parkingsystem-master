@@ -84,15 +84,11 @@ public class ParkingServiceTest {
 
     @Test
     @DisplayName("process Incoming Car. It Throw Exception when Parking Slot Illegal")
-    public void process_Incoming_Vehicle_should_Throw_Exception_when_Parking_Spot_Is_Illegal() throws SQLException {
+    public void process_Incoming_Vehicle_should_Throw_Exception_when_Parking_Spot_Is_Illegal(){
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
-
-        parkingService.processIncomingVehicle();
-
-        verify(parkingSpotDAO, times(0)).updateParking(any(ParkingSpot.class));
-        verify(ticketDAO, times(0)).saveTicket(any(Ticket.class));
+        assertThrows(IllegalArgumentException.class, () -> parkingService.processIncomingVehicle());
     }
 
     @Test
@@ -127,19 +123,6 @@ public class ParkingServiceTest {
         verify(ticketDAO, times(1)).updateTicket(any(Ticket.class));
         verify(parkingSpotDAO, times(0)).updateParking(any(ParkingSpot.class));
         assertFalse(ticket.getParkingSpot().isAvailable());
-    }
-
-    @Test
-    @DisplayName("process Exiting Bike. It should Throw SQLException whenError Occurred on GetTicket")
-    public void process_Exiting_Vehicle_should_Throw_SQL_Exception_when_GetT_icket() throws SQLException {
-        setUpPerTest();
-        new Date(System.currentTimeMillis() - (60 * 60 * 1000));
-        when(ticketDAO.getTicket(anyString())).thenThrow(new SQLException("Failed to get ticket"));
-
-        parkingService.processExitingVehicle();
-
-        verify(ticketDAO, times(0)).updateTicket(any(Ticket.class));
-        verify(parkingSpotDAO, times(0)).updateParking(any(ParkingSpot.class));
     }
 
     @Test

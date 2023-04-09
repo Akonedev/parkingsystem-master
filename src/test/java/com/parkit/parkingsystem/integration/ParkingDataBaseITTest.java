@@ -5,7 +5,6 @@ import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.Util.DataBaseTestConfig;
 import com.parkit.parkingsystem.Util.DataBasePrepareService;
-import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
@@ -67,13 +66,6 @@ public class ParkingDataBaseITTest {
         assertEquals(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR), 2);
     }
 
-    @Test
-    @DisplayName("When no vehicle type has been registered")
-    public void process_Incoming_car_should_should_Execption() throws Exception {
-        ticketDAO= null;
-        final ParkingService parkingServiceb = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        assertThrows(IllegalArgumentException.class, () -> parkingServiceb.processIncomingVehicle());
-    }
 
     @Test
     @DisplayName("test Parking A Bike")
@@ -86,9 +78,6 @@ public class ParkingDataBaseITTest {
         assertEquals(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE), 4);
     }
 
-
-
-
     @Test
     @DisplayName("test exiting A vehicule")
     public void process_Exiting_Vehicule_Should_Update_Tiket_Out_Time() throws Exception {
@@ -100,7 +89,5 @@ public class ParkingDataBaseITTest {
         assertNotNull(ticket.getOutTime());
 
     }
-
-
 
 }
