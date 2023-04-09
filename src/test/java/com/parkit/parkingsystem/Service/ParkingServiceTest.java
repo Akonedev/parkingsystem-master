@@ -92,7 +92,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    @DisplayName("process Exiting Bike. It should Update Parking")
+    @DisplayName("process Exiting vehicule. It should Update Parking")
     public void process_Exiting_Vehicle_should_Update_Parking() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
@@ -109,7 +109,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    @DisplayName("process Exiting Bike. It should Not Update Parking whenError Occurred")
+    @DisplayName("process Exiting vehicule. It should Not Update Parking whenError Occurred")
     public void process_Exiting_Vehicle_should_Not_Update_Parking_when_Error_Occurred() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
@@ -144,7 +144,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    @DisplayName("process Exiting Bik for recurring user")
+    @DisplayName("process Exiting Bike for recurring user")
     public void process_Exiting_Recurring_Vehicle_Should_return_charge_When_Exit() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
