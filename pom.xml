@@ -69,9 +69,9 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
                         <configuration>
                             <archive>
                                 <manifest>
@@ -80,9 +80,9 @@
                                     </mainClass>
                                 </manifest>
                             </archive>
-                            <descriptorRefs>
-                                <descriptorRef>executable-jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
+<!--                            <descriptorRefs>-->
+<!--                                <descriptorRef>executable-jar-with-dependencies</descriptorRef>-->
+<!--                            </descriptorRefs>-->
                         </configuration>
                     </execution>
                 </executions>
