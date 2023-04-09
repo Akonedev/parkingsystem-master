@@ -145,7 +145,7 @@ public class ParkingServiceTest {
 
     @Test
     @DisplayName("process Exiting Bik for recurring user")
-    public void process_Exiting_Vehicle_Should_return_charge_For_Recurring_User_When_Exit() throws SQLException {
+    public void process_Exiting_Recurring_Vehicle_Should_return_charge_When_Exit() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
         final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
@@ -161,8 +161,4 @@ public class ParkingServiceTest {
         verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
         assertTrue(ticket.getParkingSpot().isAvailable());
     }
-
-
-
-
 }
