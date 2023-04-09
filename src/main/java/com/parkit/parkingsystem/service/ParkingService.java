@@ -59,6 +59,7 @@ public class ParkingService {
             }
         }catch(final Exception e){
             logger.error("Unable to process incoming vehicle",e.getMessage());
+            throw new IllegalArgumentException("Unable to process incoming vehicle");
         }
     }
 
@@ -67,7 +68,7 @@ public class ParkingService {
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
 
-    public ParkingSpot getNextParkingNumberIfAvailable(){
+    public ParkingSpot getNextParkingNumberIfAvailable() throws Exception {
         int parkingNumber=0;
         ParkingSpot parkingSpot = null;
         try{
@@ -80,8 +81,10 @@ public class ParkingService {
             }
         }catch(IllegalArgumentException ie){
             logger.error("Error parsing user input for type of vehicle", ie);
+            throw new IllegalArgumentException("Error parsing user input for type of vehicle");
         }catch(Exception e){
             logger.error("Error fetching next available parking slot", e);
+            throw new Exception("Error fetching next available parking slot");
         }
         return parkingSpot;
     }
@@ -111,7 +114,6 @@ public class ParkingService {
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             Date outTime = new Date();
             ticket.setOutTime(outTime);
-            //fareCalculatorService.calculateFare(ticket);
             Boolean isRecurrent = ticketDAO.findRecurringUser(vehicleRegNumber);
             fareCalculatorService.calculateFare(ticket);
             if (isRecurrent && ticket.getPrice()>0 ) {
@@ -128,6 +130,7 @@ public class ParkingService {
             }
         }catch(final Exception e){
             logger.error("Unable to process exiting vehicle",e.getMessage());
+            throw new IllegalArgumentException("Unable to process exiting vehicle");
         }
     }
 

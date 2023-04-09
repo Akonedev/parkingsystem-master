@@ -5,6 +5,7 @@ import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.Util.DataBaseTestConfig;
 import com.parkit.parkingsystem.Util.DataBasePrepareService;
+import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -65,6 +68,14 @@ public class ParkingDataBaseITTest {
     }
 
     @Test
+    @DisplayName("When no vehicle type has been registered")
+    public void process_Incoming_car_should_should_Execption() throws Exception {
+        ticketDAO= null;
+        final ParkingService parkingServiceb = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        assertThrows(IllegalArgumentException.class, () -> parkingServiceb.processIncomingVehicle());
+    }
+
+    @Test
     @DisplayName("test Parking A Bike")
     public void process_Incoming_Bike_should_saved_tiket_and_parking_slot() throws Exception {
         final ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -74,6 +85,8 @@ public class ParkingDataBaseITTest {
         assertEquals(ticketDAO.getTicket("ABCDEF").getId(), 1);
         assertEquals(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE), 4);
     }
+
+
 
 
     @Test
@@ -87,6 +100,7 @@ public class ParkingDataBaseITTest {
         assertNotNull(ticket.getOutTime());
 
     }
+
 
 
 }

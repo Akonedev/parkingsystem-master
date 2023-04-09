@@ -144,7 +144,7 @@ public class ParkingServiceTest {
 
     @Test
     @DisplayName("process Exiting Bike.Parking Time is less than 30 mn. Should be Free")
-    public void process_Exiting_Vehicle_parking_For_Less_Than_30_Minutes_shoul_dBe_Free() throws SQLException {
+    public void process_Exiting_Vehicle_parking_For_Less_Than_30_Minutes_should_Be_Free() throws SQLException {
         setUpPerTest();
         final Date inTime = new Date(System.currentTimeMillis() - (20 * 60 * 1000));
         final Ticket ticket = generateTicket(ParkingType.CAR, inTime);
